@@ -1,0 +1,90 @@
+﻿@model List<AdminFolios.Models.ConteoGraficaModel>
+@{
+    ViewData["Title"] = "Comparación Anual";
+}
+
+<h1>Comparación Anual</h1>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load('current', { 'packages': ['bar'] });
+    google.charts.setOnLoadCallback(drawChart);
+
+    @{
+        string[] meses = new string[] { "Año", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" };
+
+        }
+
+        function drawChart() {
+            var data = google.visualization.arrayToDataTable([            
+           @for (int x = 0; x < 13; x++)
+           {
+               string fila = "['" + meses[x] + "'";
+               string comilla = "";
+               
+               for (int y = 0; y < Model.Count; y++)
+               {
+                   if(x == 0)
+                   {
+                       comilla = "'";
+                   }
+                   else
+                   {
+                       comilla = "";
+                   }
+                   fila += "," + comilla + Model[y].ConteoAnual[x] + comilla;
+               }
+               fila += "]";
+               if(x != 12)
+               {
+                   fila += ",";
+               }
+
+                @Html.Raw(fila)
+               
+            }
+        ]);
+
+        @{
+            int last = Model.Count();
+            string yearIni = Model[0].ConteoAnual[0];
+            string yearFin = Model[last - 1].ConteoAnual[0];
+            }
+
+        var options = {
+            chart: {
+                title: 'Folios consumidos',
+                subtitle: 'Periodo: ' + @Html.Raw(yearIni) + ' - ' + @Html.Raw(yearFin),
+            },
+            bars: 'horizontal' // Required for Material Bar Charts.
+        };
+
+        var chart = new google.charts.Bar(document.getElementById('barchart_material'));
+
+        chart.draw(data, google.charts.Bar.convertOptions(options));
+    }
+</script>
+
+<p>
+    @using (Html.BeginForm("conteoAnual", "Conteo"))
+    {
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text">Año Inicial</span>
+            </div>
+            <input type="text" name="yearInicial" id="yearInicial" />
+        </div>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text">Año Final</span>
+            </div>
+            <input type="text" name="yearFinal" id="yearFinal" />
+        </div>
+
+        <button type="submit" class="btn btn-info">Buscar</button>
+
+    }
+</p>
+
+<div id="barchart_material" style="width: 900px; height: 500px;"></div>
+
+

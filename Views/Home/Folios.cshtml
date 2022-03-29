@@ -1,0 +1,151 @@
+﻿@model AdminFolios.Models.IndexViewModel
+
+@{
+    ViewData["Title"] = "Folios";
+    string pathClock = Url.Content("~/Img/clock.png");
+    string pathCancel = Url.Content("~/Img/cancel.jpg");
+    string pathSuccess = Url.Content("~/Img/success.png");
+    string pathEditar = Url.Content("~/Img/lapiz.png");
+}
+
+
+<h1>Folios</h1>
+
+<p>
+    <div class="btn-group">
+        <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("Folios")'"><span class="glyphicon glyphicon-list-alt"></span></button>
+        <button type="button" class="btn btn-success" onclick="location.href='@Url.Action("Activos")'"><span class="glyphicon glyphicon-check"></span></button>
+        <button type="button" class="btn btn-warning" onclick="location.href='@Url.Action("Pendientes")'"><span class="glyphicon glyphicon-time"></span></button>
+        <button type="button" class="btn btn-danger" onclick="location.href='@Url.Action("Cancelados")'"><span class="glyphicon glyphicon-remove-circle"></span></button>
+        <button type="button" class="btn btn-info" onclick="location.href='@Url.Action("PorCaducar")'"><span class="glyphicon glyphicon-exclamation-sign"></span></button>
+        <button type="button" class="btn btn-default" onclick="location.href='@Url.Action("Agregar")'"><span class="glyphicon glyphicon-plus"></span></button>
+    </div>
+</p>
+<p>
+    @using (Html.BeginForm("Rfc", "Home"))
+    {
+        @*@Html.TextBoxFor(model => model.CodigosLicencias.ElementAt(0).RfcCliente)
+            @Html.ValidationMessageFor(model => model.CodigosLicencias.ElementAt(0).RfcCliente)*@
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text">Buscar por RFC</span>
+            </div>
+            <input type="text" name="rfc" id="rfc" />
+            <div class="input-group-append">
+                <button type="submit" class="btn btn-info">Buscar</button>
+            </div>
+        </div>
+    }
+</p>
+
+
+@section Scripts {
+    <script src="~/lib/jquery-ui/jquery-ui.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#rfc').autocomplete({
+                source: 'BuscarRFC', minLength: 2
+            });
+        });
+    </script>
+}
+
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>
+                    Folio
+                </th>
+                <th>
+                    Estatus
+                </th>
+                <th>
+                    Paquete
+                </th>
+                <th>
+                    RFC
+                </th>
+                <th>
+                    Fecha Inicial
+                </th>
+                <th>
+                    Caduca
+                </th>
+                <th>
+                    Restantes
+                </th>
+                <th>
+                    Acciones
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.CodigosLicencias)
+            {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Folio)
+                </td>
+                <td>
+                    @{
+                        if (item.Activa == 1)
+                        {
+                            <span class="badge badge-success">Activo</span>
+                        }
+                        else if (item.Activa == 2)
+                        {
+                            <span class="badge badge-warning">Pago Pend.</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-danger">Caducado</span>
+                        }
+
+                    }
+                    @*@Html.DisplayFor(modelItem => item.Activa)*@
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CantCfdis)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RfcCliente)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FechaIni)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FechaFin)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CfdisRestantes)
+                </td>
+                <td>
+                    <div class="container">
+                        <div class="btn-group btn-group-sm">
+                            @if ((item.CfdisRestantes > 0 && item.FechaFin > DateTime.Now) || item.Activa != 0)
+                            {
+                                <a asp-action="Activar" asp-route-id="@item.Folio" class="btn btn-lg btn-success">
+                                    <span class="glyphicon glyphicon-check"></span>
+                                </a>
+                                <a asp-action="Desactivar" asp-route-id="@item.Folio" class="btn btn-lg btn-danger">
+                                    <span class="glyphicon glyphicon-remove-circle"></span>
+                                </a>
+                                <a asp-action="Pendiente" asp-route-id="@item.Folio" class="btn btn-lg btn-warning">
+                                    <span class="glyphicon glyphicon-time"></span>
+                                </a>
+                            }
+                            <a asp-action="Editar" asp-route-id="@item.Folio" class="btn btn-lg btn-info">
+                                <span class="glyphicon glyphicon-edit"></span>
+                            </a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@{Html.RenderPartial("_paginador", Model);}

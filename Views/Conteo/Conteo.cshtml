@@ -1,0 +1,92 @@
+﻿@model AdminFolios.Models.IndexConteoViewModelcs
+
+@{
+    ViewData["Title"] = "Conteo";
+}
+
+<h1>Conteo</h1>
+
+<p>
+    <div class="btn-group">
+        <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("conteoF", new { mes = DateTime.Now.ToString("MM"), year = DateTime.Now.ToString("yyyy") })'">Mes en curso</button>
+        <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("conteoF", new { mes = DateTime.Now.AddMonths(-1).ToString("MM"), year = DateTime.Now.AddMonths(-1).ToString("yyyy")  })'">Mes anterior</button>
+        <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("conteoS", new { mes = DateTime.Now.ToString("MM"), year = DateTime.Now.ToString("yyyy") })'">Semestre en curso</button>
+        <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("conteoS", new { mes = DateTime.Now.AddMonths(-6).ToString("MM"), year = DateTime.Now.AddMonths(-6).ToString("yyyy") })'">Semestre anterior</button>
+        <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("conteoF", new { year = DateTime.Now.ToString("yyyy") })'">Año en curso</button>
+        <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("conteoF", new { year = DateTime.Now.AddYears(-1).ToString("yyyy") })'">Año anterior</button>        
+    </div>
+</p>
+<p>
+    @using (Html.BeginForm("conteoF", "Conteo"))
+    {
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text">RFC</span>
+            </div>
+            <input type="text" name="rfc" id="rfc" />
+        </div>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text">Año</span>
+            </div>
+            <input type="text" name="year" id="year" />
+        </div>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text">Mes</span>
+            </div>
+            <input type="text" name="mes" id="mes" />
+        </div>
+        <button type="submit" class="btn btn-info">Buscar</button>
+
+    }
+
+</p>
+<p>
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text">Total</span>
+        </div>
+        @Html.TextBoxFor(model => model.total)
+    </div>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                RFC
+            </th>
+            <th>
+                Año
+            </th>
+            <th>
+                Mes
+            </th>
+            <th>
+                Conteo
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.EdiCount)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Rfc)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Año)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Mes)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Conteo)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@{Html.RenderPartial("_paginador", Model);}

@@ -1,0 +1,40 @@
+﻿@model AdminFolios.Models.Paginador
+@{
+    var cantidadPaginas = (int)Math.Ceiling((double)Model.TotalRegistros / Model.RegistrosPorPagina);
+
+    int inicial = 1;
+    var radio = 3;
+    var cantidadMaximaDePaginas = radio * 2 + 1;
+    int final = (cantidadPaginas > cantidadMaximaDePaginas) ? cantidadMaximaDePaginas : cantidadPaginas;
+    if (Model.PaginaActual > radio +1)
+    {
+        inicial = Model.PaginaActual - radio;
+        if (cantidadPaginas > Model.PaginaActual + radio)
+        {
+            final = Model.PaginaActual + radio;
+        }
+        else
+        {
+            final = cantidadPaginas;
+        }
+    }
+}
+
+    <ul class="pagination justify-content-center">
+        @{Model.ValoresQueryString["pagina"] = 1; }
+        <li class="page-item">@Html.ActionLink("<<", null, Model.ValoresQueryString, new { @class = "page-link" })</li>
+        @for (int i = inicial; i <= final; i++)
+        {
+            Model.ValoresQueryString["pagina"] = i;
+            if (i == Model.PaginaActual)
+            {
+                <li class="page-item active">@Html.ActionLink(i.ToString(), null, Model.ValoresQueryString, new { @class = "page-link" })</li>
+            }
+            else
+            {
+                <li class="page-item">@Html.ActionLink(i.ToString(), null, Model.ValoresQueryString, new { @class = "page-link" })</li>
+            }
+        }
+        @{Model.ValoresQueryString["pagina"] = cantidadPaginas; }
+        <li class="page-item">@Html.ActionLink(">>", null, Model.ValoresQueryString, new { @class = "page-link" })</li>
+    </ul>

@@ -1,0 +1,102 @@
+﻿@model AdminFolios.Models.CodigosLicencias
+
+@{
+    ViewData["Title"] = "Editar";
+    List<SelectListItem> listaEstados = new List<SelectListItem>();
+    listaEstados.Add(new SelectListItem
+    {
+        Text = "Activo",
+        Value = "1",
+        Selected = true
+    });
+    listaEstados.Add(new SelectListItem
+    {
+        Text = "Caducado",
+        Value = "0",
+    });
+    listaEstados.Add(new SelectListItem
+    {
+        Text = "Pendiente de Pago",
+        Value = "2",
+    });
+}
+
+<h1>View</h1>
+
+<h4>CodigosLicencias</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        @using (Html.BeginForm("Actualiza", "Home"))
+        {
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @Html.TextBoxFor(model => model.Folio, new { style = "display:none;"})
+
+            @*<div class="form-group">
+                <label asp-for="Licencia" class="control-label"></label>
+                <input asp-for="Licencia" class="form-control" />
+                <span asp-validation-for="Licencia" class="text-danger"></span>
+            </div>*@
+    <div class="form-group">
+        <label asp-for="Activa" class="control-label"></label>
+        @Html.DropDownList("Activa", listaEstados, "--Selecciona Estatus--", new { @class = "dropdown" })
+        @*<input asp-for="Activa" class="form-control" />*@
+        <span asp-validation-for="Activa" class="text-danger"></span>
+    </div>
+            @*<div class="form-group">
+                <label asp-for="TipoPlan" class="control-label"></label>
+                <input asp-for="TipoPlan" class="form-control" />
+                <span asp-validation-for="TipoPlan" class="text-danger"></span>
+            </div>*@
+            <div class="form-group">
+                <label asp-for="CantCfdis" class="control-label"></label>
+                @Html.TextBoxFor(model => model.CantCfdis, new { @class = "form-control" })
+                <span asp-validation-for="CantCfdis" class="text-danger"></span>
+            </div>
+            @*<div class="form-group">
+                <label asp-for="CaducidadMeses" class="control-label"></label>
+                <input asp-for="CaducidadMeses" class="form-control" />
+                <span asp-validation-for="CaducidadMeses" class="text-danger"></span>
+            </div>*@
+            <div class="form-group">
+                <label asp-for="RfcCliente" class="control-label"></label>
+                @Html.TextBoxFor(model => model.RfcCliente, new { @class = "form-control" })
+
+                <span asp-validation-for="RfcCliente" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FechaIni" class="control-label"></label>
+                <input asp-for="FechaIni" class="form-control" />
+                <span asp-validation-for="FechaIni" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FechaFin" class="control-label"></label>
+                <input asp-for="FechaFin" class="form-control" />
+
+                <span asp-validation-for="FechaFin" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CfdisRestantes" class="control-label"></label>
+                @Html.TextBoxFor(model => model.CfdisRestantes, new { @class = "form-control" })
+
+                <span asp-validation-for="CfdisRestantes" class="text-danger"></span>
+            </div>
+            @*<div class="form-group">
+                <label asp-for="Gratuitos" class="control-label"></label>
+                <input asp-for="Gratuitos" class="form-control" />
+                <span asp-validation-for="Gratuitos" class="text-danger"></span>
+            </div>*@
+            <div class="form-group">
+                <input type="submit" value="Actualizar" class="btn btn-primary" />
+            </div>
+        }
+    </div>
+</div>
+
+<div>
+    <a asp-action="Folios">Regresar al listado</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
